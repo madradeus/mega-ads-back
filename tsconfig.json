@@ -1,0 +1,25 @@
+{
+  "compilerOptions": {
+    "noImplicitAny": true,
+    // nie pozwalamy na typ any
+    "preserveConstEnums": true,
+    // pozwalamy na enumy w js
+    "sourceMap": true,
+    // mapowanie błędów ts<->js
+    "target": "ES6",
+    "downlevelIteration": true,
+    // np. for in
+    "module": "CommonJS",
+    "lib": [
+      "es6"
+    ],
+    "outDir": "dist",
+    // folder dla produkcyjnej wersji
+    "experimentalDecorators": true,
+    // te dwie rzeczy niezbędne do dekoratorów
+    "emitDecoratorMetadata": true,
+    "moduleResolution": "Node",
+    "esModuleInterop": true
+    //pozwala na łatwiejsze importy - zamiast import * from 'xyz' to import from 'xyz
+  }
+}
