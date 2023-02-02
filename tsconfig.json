@@ -7,8 +7,9 @@
     "sourceMap": true,
     // mapowanie błędów ts<->js
     "target": "ES6",
+    //najnowszy es
     "downlevelIteration": true,
-    // np. for in
+    // żeby można było iterować nie tylko tablice np. for in
     "module": "CommonJS",
     "lib": [
       "es6"
@@ -19,6 +20,7 @@
     // te dwie rzeczy niezbędne do dekoratorów
     "emitDecoratorMetadata": true,
     "moduleResolution": "Node",
+    //moduły traktowane po node-owemu
     "esModuleInterop": true
     //pozwala na łatwiejsze importy - zamiast import * from 'xyz' to import from 'xyz
   }
