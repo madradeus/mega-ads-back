@@ -1,1 +1,1 @@
-export * from "./testD"
+export * from "./ad"
