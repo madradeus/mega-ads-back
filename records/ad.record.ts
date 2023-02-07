@@ -1,7 +1,7 @@
 import { AdEntity } from "../types";
 import { ValidationError } from "../utils/errors";
 
-interface NewAddEntity extends Omit<AdEntity, "id"> {
+interface NewAdEntity extends Omit<AdEntity, "id"> {
     id?: string;
 }
 
@@ -14,7 +14,7 @@ export class AdRecord implements AdEntity {
     public lat: number;
     public lon: number;
 
-    constructor(obj: NewAddEntity) {
+    constructor(obj: NewAdEntity) {
         if ( !obj.name || obj.name.length > 100 ) {
             throw new ValidationError('Ad name should be between 1 and 100 characters long   ')
         }
