@@ -1,9 +1,11 @@
-import { AdEntity } from "../types";
+import { AdEntity, NewAdEntity } from "../types";
 import { ValidationError } from "../utils/errors";
+import { pool } from "../db/db";
+import { FieldPacket } from "mysql2";
+import { v4 as uuid } from 'uuid'
 
-interface NewAdEntity extends Omit<AdEntity, "id"> {
-    id?: string;
-}
+
+type AdRecordResult = [AdEntity[], FieldPacket[]]
 
 export class AdRecord implements AdEntity {
     public id: string;
@@ -36,6 +38,7 @@ export class AdRecord implements AdEntity {
             throw new ValidationError('We cannot locate the ad')
         }
 
+        this.id = obj.id ?? uuid();
         this.name = obj.name;
         this.description = obj.description;
         this.price = obj.price;
@@ -44,4 +47,11 @@ export class AdRecord implements AdEntity {
         this.lon = obj.lon;
     }
 
+    static async getOne(id: string): Promise<AdRecord | null> {
+        const [[oneAd]] = await pool.execute('SELECT * FROM `mega_ads` WHERE `id` = :id', {
+            id
+        }) as AdRecordResult;
+
+        return oneAd ? new AdRecord(oneAd) : null;
+    }
 }
