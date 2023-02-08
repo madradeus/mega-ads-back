@@ -16,7 +16,7 @@ export class AdRecord implements AdEntity {
 
     constructor(obj: NewAdEntity) {
         if ( !obj.name || obj.name.length > 100 ) {
-            throw new ValidationError('Ad name should be between 1 and 100 characters long   ')
+            throw new ValidationError('Ad name should be between 1 and 100 characters long')
         }
 
         if ( obj.description.length > 1000 ) {
@@ -24,7 +24,7 @@ export class AdRecord implements AdEntity {
         }
 
         if ( obj.price < 0 || obj.price > 9999999 ) {
-            throw new ValidationError('Ad price should be between 0 - 999999 EUR')
+            throw new ValidationError('Ad price should be between 0 - 9999999 EUR')
         }
 
         //    @TODO Check if url is valid
