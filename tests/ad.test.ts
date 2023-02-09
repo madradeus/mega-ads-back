@@ -49,6 +49,7 @@ test('AdRecord find  matching records', async () => {
     expect(ads.length).toBeGreaterThan(0);
     expect(ads[0]).toBeDefined();
     expect(ads[0].name.includes('a')).toBeTruthy();
+    expect(ads[0] instanceof AdRecord).toBeTruthy();
 });
 
 test('AdRecord find all records', async () => {
@@ -57,6 +58,7 @@ test('AdRecord find all records', async () => {
 
     expect(ads).not.toStrictEqual([]);
     expect(ads[0].id).toBeDefined();
+    expect(ads[0] instanceof AdRecord).toBeTruthy();
 });
 
 test('Ad record return empty array when did not find record', async () => {
