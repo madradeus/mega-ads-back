@@ -9,8 +9,9 @@ const defaultAd = new AdRecord({
     price: 70
 });
 
-test('Can build Adrecord', () => {
+test('Can build AdRecord', () => {
 
+    expect(defaultAd.id).toBeDefined();
     expect(defaultAd.name).toEqual('Test name');
     expect(defaultAd.description).toBe('very long desc');
     expect(defaultAd.url).toBe('https://test.test.pl');
