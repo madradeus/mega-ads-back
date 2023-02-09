@@ -1,6 +1,8 @@
 import { AdRecord } from "../records/ad.record";
 import { pool } from "../db/db";
 import { AdEntity } from "../types";
+import { defaultAd } from "./ad-record.test";
+import { v4 as uuid } from "uuid";
 
 afterAll(async () => {
     await pool.end();
@@ -80,4 +82,35 @@ test('Ad record return empty array when did not find record', async () => {
 
     expect(ads).toStrictEqual([]);
     expect(ads[0]).not.toBeDefined();
+});
+
+
+jest
+    .spyOn(AdRecord.prototype, 'insert')
+    .mockImplementation(async (): Promise<string> => {
+        return uuid()
+    })
+
+
+test('AdRecord returns id', async () => {
+
+    const ad = new AdRecord(defaultAd);
+
+    const id = await ad.insert();
+
+    expect(id).toMatch(/^[0-9A-F]{8}-[0-9A-F]{4}-[4][0-9A-F]{3}-[89AB][0-9A-F]{3}-[0-9A-F]{12}$/i)
+});
+
+
+test('AdRecord.insert inserts record to db', async () => {
+
+    const ad = new AdRecord(defaultAd);
+
+    await ad.insert();
+    const foundAd = await AdRecord.getOne(ad.id);
+
+    expect(foundAd).toBeDefined();
+    expect(foundAd).not.toBeNull();
+    expect(foundAd.id).toEqual(ad.id);
+
 });

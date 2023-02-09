@@ -1,6 +1,6 @@
 import { AdRecord } from "../records/ad.record";
 
-const defaultAd = new AdRecord({
+export const defaultAd = new AdRecord({
     name: "Test name",
     description: 'very long desc',
     url: 'https://test.test.pl',
