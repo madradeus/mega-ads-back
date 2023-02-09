@@ -11,3 +11,5 @@ export interface AdEntity {
 export interface NewAdEntity extends Omit<AdEntity, "id"> {
     id?: string;
 }
+
+export type SimpleAdEntity = Pick<AdEntity, "id" | "lat" | "lon">;

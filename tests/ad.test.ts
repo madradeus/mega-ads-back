@@ -1,9 +1,11 @@
 import { AdRecord } from "../records/ad.record";
 import { pool } from "../db/db";
+import { AdEntity } from "../types";
 
 afterAll(async () => {
     await pool.end();
 })
+
 jest
     .spyOn(AdRecord, 'getOne')
     .mockImplementation(async (id: string) => {
@@ -20,7 +22,7 @@ jest
             lat: 49.1553514,
             lon: 22.4681735,
         })
-    })
+    });
 
 test('AdRecords returns data from db for single record', async () => {
     const ad = await AdRecord.getOne('abc');
@@ -48,8 +50,13 @@ test('AdRecord find  matching records', async () => {
 
     expect(ads.length).toBeGreaterThan(0);
     expect(ads[0]).toBeDefined();
-    expect(ads[0].name.includes('a')).toBeTruthy();
-    expect(ads[0] instanceof AdRecord).toBeTruthy();
+    expect(ads[0].id).toBeDefined();
+    expect(ads[0].lat).toBeDefined();
+    expect(ads[0].lon).toBeDefined();
+    expect((ads[0] as AdEntity).name).toBeUndefined();
+    expect((ads[0] as AdEntity).description).toBeUndefined();
+    expect((ads[0] as AdEntity).url).toBeUndefined();
+    expect((ads[0] as AdEntity).price).toBeUndefined();
 });
 
 test('AdRecord find all records', async () => {
@@ -58,14 +65,19 @@ test('AdRecord find all records', async () => {
 
     expect(ads).not.toStrictEqual([]);
     expect(ads[0].id).toBeDefined();
-    expect(ads[0] instanceof AdRecord).toBeTruthy();
+    expect(ads[0].id).toBeDefined();
+    expect(ads[0].lat).toBeDefined();
+    expect(ads[0].lon).toBeDefined();
+    expect((ads[0] as AdEntity).name).toBeUndefined();
+    expect((ads[0] as AdEntity).description).toBeUndefined();
+    expect((ads[0] as AdEntity).url).toBeUndefined();
+    expect((ads[0] as AdEntity).price).toBeUndefined();
 });
 
 test('Ad record return empty array when did not find record', async () => {
 
     const ads = await AdRecord.findAll('bjfkasbfjbsbndabj');
 
-
     expect(ads).toStrictEqual([]);
     expect(ads[0]).not.toBeDefined();
-})
+});
