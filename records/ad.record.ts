@@ -48,10 +48,18 @@ export class AdRecord implements AdEntity {
     }
 
     static async getOne(id: string): Promise<AdRecord | null> {
-        const [[oneAd]] = await pool.execute('SELECT * FROM `mega_ads` WHERE `id` = :id', {
+        const [[oneAd]] = await pool.execute('SELECT * FROM `ads` WHERE `id` = :id', {
             id
         }) as AdRecordResult;
 
         return oneAd ? new AdRecord(oneAd) : null;
+    }
+
+    static async findAll(phrase: string): Promise<AdRecord[]> {
+        const [found] = await pool.execute("SELECT * FROM `ads` WHERE `name` LIKE :phrase", {
+            phrase: `%${phrase}%`
+        }) as AdRecordResult;
+
+        return found.map(el => new AdRecord(el));
     }
 }
