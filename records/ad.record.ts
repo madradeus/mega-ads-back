@@ -2,7 +2,8 @@ import { AdEntity, NewAdEntity, SimpleAdEntity } from "../types";
 import { ValidationError } from "../utils/errors";
 import { pool } from "../db/db";
 import { FieldPacket } from "mysql2";
-import { v4 as uuid } from 'uuid'
+import { v4 as uuid } from 'uuid';
+import { isUri } from 'valid-url';
 
 
 type AdRecordResult = [AdEntity[], FieldPacket[]];
@@ -30,9 +31,11 @@ export class AdRecord implements AdEntity {
             throw new ValidationError('Ad price should be between 0 - 9999999 EUR')
         }
 
-        //    @TODO Check if url is valid
         if ( !obj.url ) {
             throw new ValidationError('Link is obligatory')
+        }
+        if ( !isUri(obj.url) ) {
+            throw new ValidationError('Link adress is not proper')
         }
 
         if ( !obj.lat || !obj.lon ) {

@@ -57,7 +57,7 @@ test(')Validates invalid description', () => {
     })).toThrow('Ad description cannot be longer then 1000 characters')
 });
 
-test('Validates invalid url', () => {
+test('Validates lack of url', () => {
     expect(() => new AdRecord({
         ...defaultAd,
         url: ''
@@ -65,6 +65,13 @@ test('Validates invalid url', () => {
 
 });
 
+test('Validates invalid url', () => {
+    expect(() => new AdRecord({
+        ...defaultAd,
+        url: 'no-url.com'
+    })).toThrow();
+
+});
 test('validates invalid lat and lon', () => {
 
     expect(() => new AdRecord({

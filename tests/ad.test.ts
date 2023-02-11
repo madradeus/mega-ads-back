@@ -26,7 +26,7 @@ jest
             name: 'testowa',
             description: 'testowy opis',
             price: 99.99,
-            url: 'test.test.pl',
+            url: 'https://test.test.pl',
             lat: 49.1553514,
             lon: 22.4681735,
         })
