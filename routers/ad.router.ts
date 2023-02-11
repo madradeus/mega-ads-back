@@ -1,4 +1,5 @@
 import { Router } from "express";
+import { AdRecord } from "../records/ad.record";
 
 export const adRouter = Router();
 
@@ -6,19 +7,26 @@ export const adRouter = Router();
 adRouter
     .get('/', async (req, res) => {
 
+        const { name: searchingName } = req.query as {
+            name: string
+        };
+        const phrase = searchingName ?? '';
+        const ads = await AdRecord.findAll(phrase);
+
         res.json({
-            response: 'many ads'
+            ads,
         })
     })
     .get('/:adId', async (req, res) => {
 
-        res.json({
-            response: req.params.adId
-        })
+        const ad = await AdRecord.getOne(req.params.adId);
+
+        res.json(ad)
     })
     .post('/', async (req, res) => {
 
-        res.json({
-            response: 'create new ad'
-        })
+        const ad = new AdRecord(req.body);
+        await ad.insert();
+
+        res.json(ad)
     })
