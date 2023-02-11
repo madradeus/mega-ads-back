@@ -1,12 +1,17 @@
 import { AdRecord } from "../records/ad.record";
 
-export const defaultAd = new AdRecord({
-    name: "Test name",
-    description: 'very long desc',
-    url: 'https://test.test.pl',
-    lat: 50,
-    lon: 50,
-    price: 70
+
+export let defaultAd: AdRecord
+
+beforeAll(() => {
+    defaultAd = new AdRecord({
+        name: "Test name",
+        description: 'very long desc',
+        url: 'https://test.test.pl',
+        lat: 50,
+        lon: 50,
+        price: 70
+    })
 });
 
 test('Can build AdRecord', () => {

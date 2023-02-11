@@ -1,12 +1,42 @@
 import { AdRecord } from "../records/ad.record";
 import { pool } from "../db/db";
-import { AdEntity } from "../types";
+import { AdEntity, SimpleAdEntity } from "../types";
 import { defaultAd } from "./ad-record.test";
 import { v4 as uuid } from "uuid";
+
+let newAd: AdRecord;
+
+beforeAll(() => {
+    newAd = new AdRecord(defaultAd)
+});
 
 afterAll(async () => {
     await pool.end();
 })
+
+jest
+    .spyOn(AdRecord, 'getOne')
+    .mockImplementation(async (id: string): Promise<AdRecord> => {
+
+        if ( id === 'bca' ) {
+            return null
+        }
+        return new AdRecord({
+            id,
+            name: 'testowa',
+            description: 'testowy opis',
+            price: 99.99,
+            url: 'test.test.pl',
+            lat: 49.1553514,
+            lon: 22.4681735,
+        })
+    });
+
+jest
+    .spyOn(AdRecord.prototype, 'insert')
+    .mockImplementation(async (): Promise<string> => {
+        return uuid()
+    })
 
 jest
     .spyOn(AdRecord, 'getOne')
@@ -26,7 +56,59 @@ jest
         })
     });
 
-test('AdRecords returns data from db for single record', async () => {
+
+jest
+    .spyOn(AdRecord, 'findAll')
+    .mockImplementation(async (phrase: string): Promise<SimpleAdEntity[]> => {
+        const dbMock: AdEntity[] = [
+            {
+                id: 'cvb',
+                name: 'testowa',
+                description: 'testowy opis',
+                price: 99.99,
+                url: 'test.test.pl',
+                lat: 49.1553514,
+                lon: 22.4681735,
+            },
+            {
+                id: 'xyz',
+                name: 'testowy anons',
+                description: 'testowa zawartość',
+                price: 33.99,
+                url: 'test.test.pl',
+                lat: 21.1553514,
+                lon: 34.4681735,
+            },
+            {
+                id: 'bnm',
+                name: 'testowy',
+                description: 'testowy opis opisu',
+                price: 0,
+                url: 'test.test.com',
+                lat: 43.1553514,
+                lon: 22.4681735,
+            },
+        ];
+
+        const dbResult = dbMock.filter(ad => ad.name.includes(phrase))
+
+        return dbResult.map(oneAd => {
+            const { id, lat, lon } = oneAd;
+
+            return {
+                id,
+                lat,
+                lon,
+            }
+
+        })
+
+
+    });
+
+// getOne()
+
+test('AdRecords.getOne returns data from db for single record', async () => {
     const ad = await AdRecord.getOne('abc');
 
     expect(ad).toBeDefined();
@@ -40,17 +122,19 @@ test('AdRecords returns data from db for single record', async () => {
     expect(ad.lon).toEqual(22.4681735)
 });
 
-test('AdRecord returns null for unexciting record', async () => {
+test('AdRecord.getOne  returns null for unexciting record', async () => {
     const ad = await AdRecord.getOne('bca');
 
     expect(ad).toBeNull();
 });
 
-test('AdRecord find  matching records', async () => {
+// findAll()
+
+test('AdRecord.findAll returns matching records with simple structure', async () => {
 
     const ads = await AdRecord.findAll('a')
 
-    expect(ads.length).toBeGreaterThan(0);
+    expect(ads.length).toEqual(2);
     expect(ads[0]).toBeDefined();
     expect(ads[0].id).toBeDefined();
     expect(ads[0].lat).toBeDefined();
@@ -61,12 +145,12 @@ test('AdRecord find  matching records', async () => {
     expect((ads[0] as AdEntity).price).toBeUndefined();
 });
 
-test('AdRecord find all records', async () => {
+test('AdRecord.findAll returns all records with simple structure when argument = ""', async () => {
 
     const ads = await AdRecord.findAll('')
 
     expect(ads).not.toStrictEqual([]);
-    expect(ads[0].id).toBeDefined();
+    expect(ads.length).toEqual(3)
     expect(ads[0].id).toBeDefined();
     expect(ads[0].lat).toBeDefined();
     expect(ads[0].lon).toBeDefined();
@@ -76,27 +160,19 @@ test('AdRecord find all records', async () => {
     expect((ads[0] as AdEntity).price).toBeUndefined();
 });
 
-test('Ad record return empty array when did not find record', async () => {
+test('AdRecord.findAll returns empty array when did not find record', async () => {
 
-    const ads = await AdRecord.findAll('bjfkasbfjbsbndabj');
+    const ads = await AdRecord.findAll('nonexistent-name-fragment');
 
     expect(ads).toStrictEqual([]);
     expect(ads[0]).not.toBeDefined();
 });
 
+//insert()
 
-jest
-    .spyOn(AdRecord.prototype, 'insert')
-    .mockImplementation(async (): Promise<string> => {
-        return uuid()
-    })
+test('AdRecord.insert returns id', async () => {
 
-
-test('AdRecord returns id', async () => {
-
-    const ad = new AdRecord(defaultAd);
-
-    const id = await ad.insert();
+    const id = await newAd.insert();
 
     expect(id).toMatch(/^[0-9A-F]{8}-[0-9A-F]{4}-[4][0-9A-F]{3}-[89AB][0-9A-F]{3}-[0-9A-F]{12}$/i)
 });
@@ -104,13 +180,11 @@ test('AdRecord returns id', async () => {
 
 test('AdRecord.insert inserts record to db', async () => {
 
-    const ad = new AdRecord(defaultAd);
-
-    await ad.insert();
-    const foundAd = await AdRecord.getOne(ad.id);
+    await newAd.insert();
+    const foundAd = await AdRecord.getOne(newAd.id);
 
     expect(foundAd).toBeDefined();
     expect(foundAd).not.toBeNull();
-    expect(foundAd.id).toEqual(ad.id);
+    expect(foundAd.id).toEqual(newAd.id);
 
 });
