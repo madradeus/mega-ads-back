@@ -8,7 +8,7 @@ import { adRouter } from "./routers/ad.router";
 const app = express();
 
 app.use(cors({
-    origin: 'http://localhost:3000/'
+    origin: 'http://localhost:3000'
 }));
 app.use(json({
     limit: "50kb"

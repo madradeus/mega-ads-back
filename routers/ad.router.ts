@@ -28,5 +28,6 @@ adRouter
         const ad = new AdRecord(req.body);
         await ad.insert();
 
+        res.status(201);
         res.json(ad)
     })
