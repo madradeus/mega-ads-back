@@ -35,7 +35,7 @@ export class AdRecord implements AdEntity {
             throw new ValidationError('Link is obligatory')
         }
         if ( !isUri(obj.url) ) {
-            throw new ValidationError('Link adress is not proper')
+            throw new ValidationError('Link address is not proper')
         }
 
         if ( !obj.lat || !obj.lon ) {
